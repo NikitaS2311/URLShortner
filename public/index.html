@@ -1,0 +1,82 @@
+<html lang = "en">
+    <head>
+        <title>Document</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <link rel = "stylesheet" href = "style.css">
+        <title>Document</title>
+
+    </head>
+    <body>
+        <div class = "container">
+            <h1>URL Shortener</h1>
+            <form id = "shorten-form">
+                <div>
+                    <label for = "url">Enter URL:</label><br>
+                    <input type = "text" id = "url" name = "url" required>
+                </div>
+                <div>
+                    <label for = "shortCode">Short Code:</label><br>
+                    <input type = "text" id = "shortCode" name = "shortCode" required>
+                </div>
+                <div>
+                    <button type = "submit">Shorten URL</button>
+                </div>
+            
+            </form>
+            <h2>Shortened URLs</h2>
+            <ul id = "shortened-urls"></ul>
+        </div>
+        <script>
+            const fetchShortenedURL = async () =>{
+                const response = await fetch("/links");
+                const links = await response.json();
+                console.log("links", links);
+                //TO DO - to show all the url and shorten and show them on browser
+
+                const list = document.getElementById("shortened-urls");
+                list.innerHTML = "";
+
+                for (const [shortCode, url] of Object.entries(links)) {
+                    const li = document.createElement('li');
+                    const truncatedURL = url.length >=30 ? `${url.slice(0,30)}...`:url;
+                    li.innerHTML = `<a href = "/${shortCode}" target = "_blank">$ 
+                        {window.location.origin}/${shortCode}</a> - ${truncatedURL} `
+                        list.appendChild(li)
+}
+
+            }
+
+            document.getElementById('shorten-form')
+            .addEventListener('submit', async function(event){
+                event.preventDefault(); // prevent the form from submitting normally
+                const formData = new FormData(event.target); // get the form data
+                const url = formData.get('url'); // get the URL from the form data
+                const shortCode = formData.get('shortCode'); // get the short code from the form data
+              //  const shortenedUrl = `http://short.url/${shortCode}`;
+                console.log(url, shortCode); // create the shortened URL
+                try{
+                   const response =  await fetch("/shorten", {
+                    method : "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({url, shortCode})
+                   });
+
+                   if(response.ok){
+                    fetchShortenedURL();
+                    const result = await response.json();
+                    alert("Form submitted successully");
+                   } else {
+                    const errorMessage = await response.text();
+                    alert(errorMessage)
+                   }
+
+                }catch(error){
+                    console.log(error);
+                }
+            }) 
+            fetchShortenedURL();
+
+        </script>
+    </body>
+    </html>
