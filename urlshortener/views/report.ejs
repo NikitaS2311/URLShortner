@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Report Card</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Include the header -->
+  <%- include('header') %>
+
+  <!-- Main content -->
+  <div class="container">
+    <h1>Student Report Card</h1>
+
+    <div class="card-container">
+      <% student.forEach(student => { %>
+        <div class="student-card">
+          <p><strong>Name:</strong> <%= student.Name %></p>
+          <p><strong>Degree:</strong> <%= student.Degree %></p>
+          <p><strong>CGPA:</strong> <%= student.CGPA %></p>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+</body>
+</html>
