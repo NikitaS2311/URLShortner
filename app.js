@@ -1,47 +1,34 @@
-import express from "express";
- import {readFile, writeFile, mkdir}  from "fs/promises";
-// import fs from "fs";
-// import crypto from "crypto";
-import path from "path";
+// import dotenv from 'dotenv';
+// dotenv.config();
 
+// ✅ THEN import env validation (after dotenv.config)
+import { env } from './config/env.js';
 
-import { fileURLToPath } from "url";
-import {shortenedRoutes} from "./urlshortener/routes/shortener.routes.js"
-
-const app = express();
-const PORT = process.env.port||3000;
-
-// Required for __dirname in ESM
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { shortenedRoutes } from './urlshortener/routes/shortener.routes.js';
+// ✅ Setup __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Paths
-// const DATA_DIR = path.join(__dirname,"urlshortener", "data");
-// const DATA_FILE = path.join(DATA_DIR, "links.json");
-// const VIEWS_DIR = path.join(__dirname, "urlshortener","views");
+// ✅ Initialize app
+const app = express();
+const PORT = env.PORT; // use Zod-validated port
 
-// Middleware
-app.use(express.static(path.join(__dirname, "urlshortener","public")));
-app.use(express.urlencoded({ extended: true })); // for form data
-app.use(express.json()); // for JSON body
+// ✅ Middleware
+app.use(express.static(path.join(__dirname, "urlshortener", "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-//Here, we're using template engine(ejs)
+// ✅ EJS template engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "urlshortener", "views"));
 
-app.set("view engine", "ejs"); // which template engine we'are using that ejs
-app.set('views', path.join(__dirname,'urlshortener', 'views'));
-
-
-
-
-
-
+// ✅ Route handler
 app.use(shortenedRoutes);
 
-// Create data directory if not exists
-//await mkdir(DATA_DIR, { recursive: true });
-
-
-// Start server
+// ✅ Start server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

@@ -25,6 +25,7 @@
             
             </form>
             <h2>Shortened URLs</h2>
+            <%# forEach loop %>
             <ul >
         <!-- Object.enteries(links).map(([shortCode, url]) =>{
             url = url.length >= 30 ?`$url.slice(0,30)}...`:url;
@@ -33,15 +34,18 @@
         </li>
   );
       .join(""); -->
-      <% Object.entries(links).map(([shortCode, url]) =>{ %>
-        <li>
-            <%const truncatedURL = url.length >= 30 ?`$url.slice(0,30)}...`:url %>;
-            <a href="/<%= shortCode%>" target = "_blank">
-                <%= host %>/<%= shortCode %>
-            </a> - <%= truncatedURL %>
-        </li>
-    <%})%>
-            </ul>
+      <ul>
+  <% links.forEach(link => { %>
+    <li>
+      <% const truncatedURL = link.url.length >= 30 ? link.url.slice(0, 30) + "..." : link.url; %>
+      <a href="/<%= link.shortCode %>" target="_blank">
+        <%= host %>/<%= link.shortCode %>
+      </a> - <%= truncatedURL %>
+    </li>
+  <% }) %>
+</ul>
+
+      
         </div>
         <script>
             //const fetchShortenedURL = async () =>{
